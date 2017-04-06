@@ -13,35 +13,31 @@ using namespace std;
 #include <fstream>
 #include <iostream>
 #include <cstdio>
-#include <string>
+#include <cstring>
+#include <cstdio>
 
 class CsvFile {
 	string name,
-		path;
-	filebuf* pFileBuf;
-	ofstream FileName;
-
+		path = " ";
+	size_t fileLen;
+	FILE* pFile;
+	char fileBuf[16384];
 
 	CsvFile(string fileName, string directory) {
-		name = fileName;
-		path = directory + fileName;
-		FileName.open(&path);
-		pFileBuf = FileName.rdbuf;
+		strcpy(name, fileName);
+		strcpy(path, directory);
+		strcat(path, fileName);
+		pFile = fopen(path, "r");
+		pFileBuf = 
 	}
 
 	short int findStrInFile(string search, unsigned short int appearCt = 0) {
 		unsigned long int pos = 0;
 		unsigned short int counter = 0;
-		unsigned char strLen = sizeof(search);
-		char strBuf[64];
 		bool bDoesMatch = false;
-		for(int i = 0; i < sizeof(strBuf); i++) {
-			strBuf[i] = 0;
-		}
 
-		while(sgetc() != EOF) {
+		while(!feof()) {
 			if(sgetc() == search[pos]) {
-				sgetn(strBuf, strLen);
 				bDoesMatch = true;
 				for(int i = 0; i < strLen; i++) {
 					if(strBuf[i] != search[i]) {
