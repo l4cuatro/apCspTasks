@@ -28,19 +28,20 @@ class CsvFile {
 		strcpy(path, directory);
 		strcat(path, fileName);
 		pFile = fopen(path, "r");
-		pFileBuf = 
+		fgets(fileBuf, (sizeof(fileBuf) / sizeof(char)), pFile);
 	}
 
 	short int findStrInFile(string search, unsigned short int appearCt = 0) {
-		unsigned long int pos = 0;
+		unsigned long int searchPos = 0,
+			filePos = 0;
 		unsigned short int counter = 0;
 		bool bDoesMatch = false;
 
-		while(!feof()) {
-			if(sgetc() == search[pos]) {
+		while(filePos < sizeof(fileBuf) / sizeof(char)) {
+			if(fileBuf[filePos] == search[pos]) {
 				bDoesMatch = true;
-				for(int i = 0; i < strLen; i++) {
-					if(strBuf[i] != search[i]) {
+				for(int i = 0; i < (sizeof(fileBuf) / sizeof(char); i++) {
+					if(fileBuf[i] != search[i]) {
 						bDoesMatch = false;
 						break; //Stop iterating over substring, no reason to keep searching
 					}
@@ -48,14 +49,14 @@ class CsvFile {
 			}
 			if(bDoesMatch)  {
 				if(counter == appearCt) {
-					return pos;
+					return filePos;
 				}
 				else {
 					counter++;
 				}
 			}
-			pos++; //Increment pos variable to match sbumpc()
-			sbumpc(); //Advance to next character
+			searchPos++; //Read next char
+			filePos++;
 		}
 		return -1;
 	}
