@@ -18,7 +18,8 @@ using namespace std;
 
 class CsvFile {
 	string name,
-		path = " ";
+		path,
+		parseStr;
 	size_t fileLen;
 	FILE* pFile;
 	char fileBuf[16384];
@@ -87,6 +88,30 @@ class CsvFile {
 		return count;
 	}
 
+	unsigned char countStr(string search) {
+		unsigned long int searchPos = 0,
+			filePos = 0;
+		unsigned short int counter = 0;
+		bool bDoesMatch = false;
+
+		while(filePos < sizeof(fileBuf) / sizeof(char)) {
+			if(fileBuf[filePos] == search[pos]) {
+				bDoesMatch = true;
+				for(int i = 0; i < (sizeof(fileBuf) / sizeof(char); i++) {
+					if(fileBuf[i] != search[i]) {
+						bDoesMatch = false;
+						break; //Stop iterating over substring, no reason to keep searching
+					}
+				}
+			}
+			if(bDoesMatch)
+				counter++;
+			searchPos++; //Read next char
+			filePos++;
+		}
+		return count;
+	}
+	
 };
 
 
