@@ -80,10 +80,10 @@ class CsvFile {
 			sbumpc();
 			pos++;
 		}
-		while(sgetc() != EOF && pos <= endPos) {
-			if(sgetc() == search)
+		while(filePos < sizeof(fileBuf) / sizeof(char)) {
+			if(fileBuf[filePos] == search)
 				count++;
-			sbumpc();
+			filePos++;
 		}
 		return count;
 	}
