@@ -23,24 +23,23 @@ namespace ScoutDb {
 
 	public class Team {
 		
-		unsigned short int teamIndex;
+		short teamIndex;
 		
-		unsigned short int allies[15],
-			opponents[30];
+		short *allies,
+			*opponents;
 			
-		unsigned char record[3];
+		char record[3];
 		
 		unsigned char ap,
 			wp;
 		
-		int sp;
-		
-		int allyScoreSum,
+		unsigned int sp,
+			allyScoreSum,
 			oppScoreSum;
 		
 		string number; //Team Number
 		
-		Team(string num, unsigned short int index) { //Constructor
+		Team(string num, short index, char matchesPerTeam) { //Constructor
 			teamIndex = index;
 			number = num;
 			sp = 0;
@@ -50,14 +49,11 @@ namespace ScoutDb {
 			for(int i = 0; i < sizeof(record); i++)
 				record[i] = 0;
 			
-			for(int i = 0; i < sizeof(allies) / sizeof(short); i++) {
-				allies[i] = 0;
-				opponents[2 * i] = 0;
-				opponents[2 * i + 1] = 0;
-			}
+			allies = (short*)(calloc(matchesPerTeam * sizeof(short)));
+			opponents = (short*)(calloc(2 * matchesPerTeam * sizeof(short)));
 		}
 
-		void upStats(unsigned short int ally, unsigned short int opponent1, unsigned short int opponent2, bool bDidWinAuton, short int score, short int oppScore, unsigned char matchInd) {
+		void upStats(short int ally, short int opponent1, short int opponent2, bool bDidWinAuton, short int score, short int oppScore, unsigned short matchInd) {
 			allies[matchInd] = ally;
 			opponents[2 * matchInd] = opponent1;
 			opponents[2 * matchInd + 1] = opponent2;
