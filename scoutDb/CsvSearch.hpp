@@ -13,38 +13,36 @@ using namespace std;
 #include <fstream>
 #include <iostream>
 #include <cstdio>
-#include <string>
+#include <cstring>
+#include <cstdio>
 
 class CsvFile {
 	string name,
-		path;
-	filebuf* pFileBuf;
-	ofstream FileName;
-
+		path,
+		parseStr;
+	size_t fileLen;
+	FILE* pFile;
+	char fileBuf[16384];
 
 	CsvFile(string fileName, string directory) {
-		name = fileName;
-		path = directory + fileName;
-		FileName.open(&path);
-		pFileBuf = FileName.rdbuf;
+		strcpy(name, fileName);
+		strcpy(path, directory);
+		strcat(path, fileName);
+		pFile = fopen(path, "r");
+		fgets(fileBuf, (sizeof(fileBuf) / sizeof(char)), pFile);
 	}
 
 	short int findStrInFile(string search, unsigned short int appearCt = 0) {
-		unsigned long int pos = 0;
+		unsigned long int searchPos = 0,
+			filePos = 0;
 		unsigned short int counter = 0;
-		unsigned char strLen = sizeof(search);
-		char strBuf[64];
 		bool bDoesMatch = false;
-		for(int i = 0; i < sizeof(strBuf); i++) {
-			strBuf[i] = 0;
-		}
 
-		while(sgetc() != EOF) {
-			if(sgetc() == search[pos]) {
-				sgetn(strBuf, strLen);
+		while(filePos < sizeof(fileBuf) / sizeof(char)) {
+			if(fileBuf[filePos] == search[pos]) {
 				bDoesMatch = true;
-				for(int i = 0; i < strLen; i++) {
-					if(strBuf[i] != search[i]) {
+				for(int i = 0; i < (sizeof(fileBuf) / sizeof(char); i++) {
+					if(fileBuf[i] != search[i]) {
 						bDoesMatch = false;
 						break; //Stop iterating over substring, no reason to keep searching
 					}
@@ -52,14 +50,14 @@ class CsvFile {
 			}
 			if(bDoesMatch)  {
 				if(counter == appearCt) {
-					return pos;
+					return filePos;
 				}
 				else {
 					counter++;
 				}
 			}
-			pos++; //Increment pos variable to match sbumpc()
-			sbumpc(); //Advance to next character
+			searchPos++; //Read next char
+			filePos++;
 		}
 		return -1;
 	}
@@ -82,14 +80,38 @@ class CsvFile {
 			sbumpc();
 			pos++;
 		}
-		while(sgetc() != EOF && pos <= endPos) {
-			if(sgetc() == search)
+		while(filePos < sizeof(fileBuf) / sizeof(char)) {
+			if(fileBuf[filePos] == search)
 				count++;
-			sbumpc();
+			filePos++;
 		}
 		return count;
 	}
 
+	unsigned char countStr(string search) {
+		unsigned long int searchPos = 0,
+			filePos = 0;
+		unsigned short int counter = 0;
+		bool bDoesMatch = false;
+
+		while(filePos < sizeof(fileBuf) / sizeof(char)) {
+			if(fileBuf[filePos] == search[pos]) {
+				bDoesMatch = true;
+				for(int i = 0; i < (sizeof(fileBuf) / sizeof(char); i++) {
+					if(fileBuf[i] != search[i]) {
+						bDoesMatch = false;
+						break; //Stop iterating over substring, no reason to keep searching
+					}
+				}
+			}
+			if(bDoesMatch)
+				counter++;
+			searchPos++; //Read next char
+			filePos++;
+		}
+		return count;
+	}
+	
 };
 
 
